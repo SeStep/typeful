@@ -1,0 +1,7 @@
+int: Celé číslo
+text: Text
+
+error.invalidType: Neplatný typ
+error.invalidValue: Neplatná hodnota
+error.surplusField: Přebytečná položka
+error.undefinedValue: Nedefinovaná hodnota

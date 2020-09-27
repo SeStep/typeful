@@ -1,0 +1,37 @@
+{
+  "name": "sestep/typeful",
+  "description": "Generic approach to entity and property description",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Štěpán Śevčík",
+      "email": "Thoronir42@Gmail.com"
+    }
+  ],
+  "scripts": {
+    "test": "phpunit ./test"
+  },
+  "require": {
+    "php": "^7.3",
+    "nette/schema": "^1.0.2"
+  },
+  "require-dev": {
+    "contributte/console": "^0.8.0",
+    "phpunit/phpunit": "^9"
+  },
+  "suggest": {
+    "contributte/console": "CLI commands for interaction with Typeful",
+    "nette/di": "Straightforward integration to Nette DI based applications"
+  },
+  "autoload": {
+    "psr-4": {
+      "SeStep\\Typeful\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SeStep\\Typeful\\": "test/"
+    }
+  }
+}

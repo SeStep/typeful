@@ -1,0 +1,7 @@
+int: Integer
+text: Text
+
+error.invalidType: Invalid type
+error.invalidValue: Invalid value
+error.surplusField: Surplus field
+error.undefinedValue: Undefined value

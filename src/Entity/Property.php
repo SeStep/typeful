@@ -9,10 +9,10 @@ class Property
     /** @var array */
     private $typeOptions;
 
-    public function __construct(string $type, array $typeOptions = [])
+    public function __construct(string $type, array $options = [])
     {
         $this->type = $type;
-        $this->typeOptions = $typeOptions;
+        $this->typeOptions = $options;
     }
 
     public function getType(): string

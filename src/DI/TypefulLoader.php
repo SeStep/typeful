@@ -120,7 +120,7 @@ trait TypefulLoader
         $propertyStatements = [];
         foreach ($properties as $name => $property) {
             $propertyStatements[$name] = new Statement(Property::class,
-                [$property->type, $property->options ?? []]);
+                ['type' => $property->type, 'options' => $property->options ?? []]);
         }
 
         return $propertyStatements;

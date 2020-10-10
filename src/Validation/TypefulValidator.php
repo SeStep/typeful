@@ -51,7 +51,7 @@ class TypefulValidator
         foreach ($properties as $name => $property) {
             $value = $propertyData[$name] ?? null;
             if ($value === null) {
-                if (!$property->isNullable()) {
+                if ($property->isRequired()) {
                     $errors[$name] = new ValidationError(ValidationError::UNDEFINED_VALUE);
                 }
 

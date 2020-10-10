@@ -25,7 +25,7 @@ class RegistryFactory
                 'max' => 8,
             ]),
             'description' => new Property(self::TEST_TYPE_TEXT, [
-                'nullable' => true,
+                'required' => false,
                 'richText' => true,
             ]),
         ]);

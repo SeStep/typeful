@@ -35,11 +35,11 @@ class TypefulValidatorTest extends TestCase
                 ['class' => 'chair', 'legCount' => 8, 'description' => 'Spider chair, very comfortable'],
                 [],
             ],
-            'valid, nullable property' => [
+            'valid, non-required property' => [
                 ['class' => 'table', 'legCount' => 3],
                 [],
             ],
-            'invalid, missing non-nullable property' => [
+            'invalid, missing required property' => [
                 ['class' => 'table'],
                 [
                     'legCount' => new ValidationError(ValidationError::UNDEFINED_VALUE),

@@ -25,8 +25,8 @@ class Property
         return $this->typeOptions;
     }
 
-    public function isNullable(): bool
+    public function isRequired(): bool
     {
-        return $this->typeOptions['nullable'] ?? false;
+        return $this->typeOptions['required'] ?? true;
     }
 }

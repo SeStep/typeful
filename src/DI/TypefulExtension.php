@@ -6,8 +6,8 @@ use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\DI\Definitions\Statement;
-use Nette\Schema\Expect;
 use Nette\Schema\Processor;
+use Nette\Schema\Schema;
 use SeStep\Typeful\Console\ListEntitiesCommand;
 use SeStep\Typeful\Console\ListTypesCommand;
 use SeStep\Typeful\Entity\GenericDescriptor;
@@ -25,9 +25,29 @@ class TypefulExtension extends CompilerExtension
     /** @var array[] */
     private $moduleConfigs = [];
 
+    /** @var TypefulPlugins */
+    private $plugins;
+
+    public function __construct()
+    {
+        $this->plugins = new TypefulPlugins();
+    }
+
     public function addTypefulModule(string $name, $typefulModuleConfig)
     {
         $this->moduleConfigs[$name] = $typefulModuleConfig;
+    }
+
+    public function addTypePlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null): self
+    {
+        $this->plugins->addTypePlugin($configKey, $pluginConfigSchema, $tag);
+        return $this;
+    }
+
+    public function addDescriptorPlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null): self
+    {
+        $this->plugins->addDescriptorPlugin($configKey, $pluginConfigSchema, $tag);
+        return $this;
     }
 
     public function loadConfiguration()
@@ -42,7 +62,6 @@ class TypefulExtension extends CompilerExtension
             'entityDescriptorRegister' => Service\EntityDescriptorRegistry::class,
             'validator' => Validation\TypefulValidator::class,
         ]);
-
 
         if (class_exists(\Symfony\Component\Console\Command\Command::class)) {
             $builder->addDefinition($this->prefix('listTypesCommand'))
@@ -85,7 +104,7 @@ class TypefulExtension extends CompilerExtension
     private function loadModules(ContainerBuilder $builder)
     {
         $processor = new Processor();
-        $typefulModuleSchema = self::getTypefulSchema();
+        $typefulModuleSchema = $this->plugins->getTypefulSchema();
 
         foreach ($this->moduleConfigs as $name => $moduleConfig) {
             $config = $processor->process($typefulModuleSchema, $moduleConfig);
@@ -95,43 +114,31 @@ class TypefulExtension extends CompilerExtension
 
     private function loadModule(ContainerBuilder $builder, $name, object $config)
     {
-        foreach ($config->types as $type => $definition) {
-            if (isset($definition->service)) {
-                $service = mb_substr($definition->service, 1);
+        foreach ($config->types as $type => $typeConfig) {
+            if (isset($typeConfig->service)) {
+                $service = mb_substr($typeConfig->service, 1);
                 $typeDefinition = $builder->getDefinition($service);
             } else {
                 $typeDefinition = $builder->addDefinition("$name.type.$type")
-                    ->setType($definition->class)
-                    ->setAutowired($definition->autowired)
-                    ->setArguments($definition->arguments);
+                    ->setType($typeConfig->class)
+                    ->setAutowired($typeConfig->autowired)
+                    ->setArguments($typeConfig->arguments);
             }
             $typeDefinition->addTag(TypefulExtension::TAG_TYPE, "$name.$type");
-
-            // TODO: move this someplace else, possibly plugins?
-            if (class_exists(NetteTypefulExtension::class) && isset($definition->netteControlFactory)) {
-                $typeDefinition->addTag(NetteTypefulExtension::TAG_TYPE_CONTROL_FACTORY,
-                    $definition->netteControlFactory);
-            }
+            $this->plugins->decorateTypeDefinition($typeDefinition, $typeConfig);
         }
 
-        foreach ($config->entities as $entity => $definition) {
-            $builder->addDefinition(
-                "$name.entity.$entity",
-                $this->createEntityDefinition($definition)
-                    ->addTag(TypefulExtension::TAG_ENTITY, $definition->name ?? $entity)
-            );
+        foreach ($config->entities as $entity => $entityConfig) {
+            $entityDefinition = $builder->addDefinition("$name.entity.$entity")
+                ->setType(GenericDescriptor::class)
+                ->setAutowired(false)
+                ->setArguments([
+                    'properties' => self::getPropertiesStatement($entityConfig->properties),
+                    'propertyNamePrefix' => $entityConfig->propertyNameConfig ?? '',
+                ]);
+            $entityDefinition->addTag(TypefulExtension::TAG_ENTITY, $typeConfig->name ?? $entity);
+            $this->plugins->decorateEntityDefinition($entityDefinition, $entityConfig);
         }
-    }
-
-    private function createEntityDefinition($definition)
-    {
-        return (new ServiceDefinition())
-            ->setType(GenericDescriptor::class)
-            ->setAutowired(false)
-            ->setArguments([
-                'properties' => self::getPropertiesStatement($definition->properties),
-                'propertyNamePrefix' => $definition->propertyNamePrefix ?? '',
-            ]);
     }
 
     protected static function getPropertiesStatement(array $properties): array
@@ -145,34 +152,4 @@ class TypefulExtension extends CompilerExtension
         return $propertyStatements;
     }
 
-    private function getTypefulSchema()
-    {
-        $typeSchema = Expect::anyOf(
-            Expect::structure([
-                'class' => Expect::string()->required(),
-                'arguments' => Expect::array(),
-                'autowired' => Expect::bool(false),
-                'netteControlFactory' => Expect::mixed(),
-            ]),
-            Expect::structure([
-                'service' => Expect::string()->assert(function ($value) {
-                    return mb_substr($value, 0, 1) === '@';
-                }, 'String is in a service reference format'),
-                'netteControlFactory' => Expect::mixed(),
-            ]),
-        );
-        $entitySchema = Expect::structure([
-            'name' => Expect::string(),
-            'propertyNamePrefix' => Expect::string(),
-            'properties' => Expect::arrayOf(Expect::structure([
-                'type' => Expect::string()->required(),
-                'options' => Expect::array(),
-            ]))->min(1.0)
-        ]);
-
-        return Expect::structure([
-            'types' => Expect::arrayOf($typeSchema),
-            'entities' => Expect::arrayOf($entitySchema),
-        ]);
-    }
 }

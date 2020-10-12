@@ -106,30 +106,30 @@ class TypefulExtension extends CompilerExtension
         $processor = new Processor();
         $typefulModuleSchema = $this->plugins->getTypefulSchema();
 
-        foreach ($this->moduleConfigs as $name => $moduleConfig) {
+        foreach ($this->moduleConfigs as $moduleName => $moduleConfig) {
             $config = $processor->process($typefulModuleSchema, $moduleConfig);
-            $this->loadModule($builder, $name, $config);
+            $this->loadModule($builder, $moduleName, $config);
         }
     }
 
-    private function loadModule(ContainerBuilder $builder, $name, object $config)
+    private function loadModule(ContainerBuilder $builder, string $moduleName, object $config)
     {
         foreach ($config->types as $type => $typeConfig) {
             if (isset($typeConfig->service)) {
                 $service = mb_substr($typeConfig->service, 1);
                 $typeDefinition = $builder->getDefinition($service);
             } else {
-                $typeDefinition = $builder->addDefinition("$name.type.$type")
+                $typeDefinition = $builder->addDefinition($this->prefix("type.$moduleName.$type"))
                     ->setType($typeConfig->class)
                     ->setAutowired($typeConfig->autowired)
                     ->setArguments($typeConfig->arguments);
             }
-            $typeDefinition->addTag(TypefulExtension::TAG_TYPE, "$name.$type");
+            $typeDefinition->addTag(TypefulExtension::TAG_TYPE, "$moduleName.$type");
             $this->plugins->decorateTypeDefinition($typeDefinition, $typeConfig);
         }
 
         foreach ($config->entities as $entity => $entityConfig) {
-            $entityDefinition = $builder->addDefinition("$name.entity.$entity")
+            $entityDefinition = $builder->addDefinition($this->prefix("entity.$moduleName.$entity"))
                 ->setType(GenericDescriptor::class)
                 ->setAutowired(false)
                 ->setArguments([
@@ -138,7 +138,7 @@ class TypefulExtension extends CompilerExtension
                 ]);
             $entityName = $typeConfig->name ?? null;
             if (!$entityName) {
-                $entityName = "$name.$entity";
+                $entityName = "$moduleName.$entity";
             }
             $entityDefinition->addTag(TypefulExtension::TAG_ENTITY, $entityName);
             $this->plugins->decorateEntityDefinition($entityDefinition, $entityConfig);

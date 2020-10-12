@@ -79,7 +79,7 @@ class TypefulPlugins
     private function createEntitySchema(): Schema
     {
         $entityPlugins = [];
-        foreach ($this->typePlugins as $configKey => $plugin) {
+        foreach ($this->entityPlugins as $configKey => $plugin) {
             $entityPlugins[$configKey] = $plugin['schema'];
         }
 

@@ -136,7 +136,11 @@ class TypefulExtension extends CompilerExtension
                     'properties' => self::getPropertiesStatement($entityConfig->properties),
                     'propertyNamePrefix' => $entityConfig->propertyNameConfig ?? '',
                 ]);
-            $entityDefinition->addTag(TypefulExtension::TAG_ENTITY, $typeConfig->name ?? $entity);
+            $entityName = $typeConfig->name ?? null;
+            if (!$entityName) {
+                $entityName = "$name.$entity";
+            }
+            $entityDefinition->addTag(TypefulExtension::TAG_ENTITY, $entityName);
             $this->plugins->decorateEntityDefinition($entityDefinition, $entityConfig);
         }
     }

@@ -30,7 +30,7 @@ class TypefulPlugins
         ];
     }
 
-    public function addDescriptorPlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null)
+    public function addEntityPlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null)
     {
         static $reservedTypeKeys = ['name', 'propertyNamePrefix', 'properties'];
         if (in_array($configKey, $reservedTypeKeys)) {

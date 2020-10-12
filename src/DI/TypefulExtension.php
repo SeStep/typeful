@@ -44,9 +44,9 @@ class TypefulExtension extends CompilerExtension
         return $this;
     }
 
-    public function addDescriptorPlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null): self
+    public function addEntityPlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null): self
     {
-        $this->plugins->addDescriptorPlugin($configKey, $pluginConfigSchema, $tag);
+        $this->plugins->addEntityPlugin($configKey, $pluginConfigSchema, $tag);
         return $this;
     }
 

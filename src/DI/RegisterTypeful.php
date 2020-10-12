@@ -17,9 +17,9 @@ trait RegisterTypeful
         $this->getTypefulExtension()->addTypePlugin($configKey, $pluginConfigSchema, $tag);
     }
 
-    protected function registerTypefulDescriptorPlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null)
+    protected function registerTypefulEntityPlugin(string $configKey, Schema $pluginConfigSchema, string $tag = null)
     {
-        $this->getTypefulExtension()->addDescriptorPlugin($configKey, $pluginConfigSchema, $tag);
+        $this->getTypefulExtension()->addEntityPlugin($configKey, $pluginConfigSchema, $tag);
     }
 
     private function getTypefulExtension(): TypefulExtension

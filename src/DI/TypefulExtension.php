@@ -134,7 +134,7 @@ class TypefulExtension extends CompilerExtension
                 ->setAutowired(false)
                 ->setArguments([
                     'properties' => self::getPropertiesStatement($entityConfig->properties),
-                    'propertyNamePrefix' => $entityConfig->propertyNameConfig ?? '',
+                    'propertyNamePrefix' => $entityConfig->propertyNamePrefix ?? '',
                 ]);
             $entityName = $typeConfig->name ?? null;
             if (!$entityName) {

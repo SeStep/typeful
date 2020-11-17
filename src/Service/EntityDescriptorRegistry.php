@@ -3,6 +3,8 @@
 namespace SeStep\Typeful\Service;
 
 use Nette\InvalidStateException;
+use Nette\SmartObject;
+use Nette\Utils\ObjectHelpers;
 use SeStep\Typeful\Entity;
 
 class EntityDescriptorRegistry
@@ -21,7 +23,12 @@ class EntityDescriptorRegistry
     {
         $entityDescriptor = $this->descriptors[$entityName] ?? null;
         if (!$entityDescriptor && $need) {
-            throw new InvalidStateException("Entity descriptor '$entityName' not found");
+            $message = "Entity descriptor '$entityName' not found";
+            if ($suggestion = $this->getSuggestion(array_keys($this->descriptors), $entityName)) {
+                $message .= ", did you mean '$suggestion'?";
+            }
+
+            throw new InvalidStateException($message);
         }
 
         return $entityDescriptor;
@@ -29,10 +36,7 @@ class EntityDescriptorRegistry
 
     public function getEntityProperty(string $entityName, string $propertyName): ?Entity\Property
     {
-        $descriptor = $this->getEntityDescriptor($entityName);
-        if (!$descriptor) {
-            throw new InvalidStateException("Entity '$entityName' is not registered");
-        }
+        $descriptor = $this->getEntityDescriptor($entityName, true);
 
         return $descriptor->getProperty($propertyName);
     }
@@ -52,5 +56,14 @@ class EntityDescriptorRegistry
         }
 
         $this->descriptors[$entityName] = $descriptor;
+    }
+
+    private function getSuggestion(array $options, $value): ?string
+    {
+        if (!class_exists(ObjectHelpers::class)) {
+            return null;
+        }
+
+        return ObjectHelpers::getSuggestion($options, $value);
     }
 }

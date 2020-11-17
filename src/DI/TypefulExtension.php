@@ -4,10 +4,13 @@ namespace SeStep\Typeful\DI;
 
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
+use Nette\DI\Definitions\Reference;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\DI\Definitions\Statement;
+use Nette\DI\Helpers;
 use Nette\Schema\Processor;
 use Nette\Schema\Schema;
+use Nette\Utils\ObjectHelpers;
 use SeStep\Typeful\Console\ListEntitiesCommand;
 use SeStep\Typeful\Console\ListTypesCommand;
 use SeStep\Typeful\Entity\GenericDescriptor;
@@ -133,7 +136,7 @@ class TypefulExtension extends CompilerExtension
                 ->setType(GenericDescriptor::class)
                 ->setAutowired(false)
                 ->setArguments([
-                    'properties' => self::getPropertiesStatement($entityConfig->properties),
+                    'properties' => $this->getPropertiesStatement($builder, $entityConfig->properties),
                     'propertyNamePrefix' => $entityConfig->propertyNamePrefix ?? '',
                 ]);
             $entityName = $typeConfig->name ?? null;
@@ -145,12 +148,18 @@ class TypefulExtension extends CompilerExtension
         }
     }
 
-    protected static function getPropertiesStatement(array $properties): array
+    protected function getPropertiesStatement(ContainerBuilder $builder, array $properties): array
     {
         $propertyStatements = [];
         foreach ($properties as $name => $property) {
-            $propertyStatements[$name] = new Statement(Property::class,
-                ['type' => $property->type, 'options' => $property->options ?? []]);
+            $options = [];
+            foreach ($property->options as $key => $optValue) {
+                $options[$key] = Helpers::expand($optValue, $builder->parameters);
+            }
+            $propertyStatements[$name] = new Statement(Property::class, [
+                'type' => $property->type,
+                'options' => $options,
+            ]);
         }
 
         return $propertyStatements;

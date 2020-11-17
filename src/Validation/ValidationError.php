@@ -11,10 +11,13 @@ class ValidationError
 
     /** @var string */
     private $errorType;
+    /** @var array */
+    private $errorData;
 
-    public function __construct(string $errorType)
+    public function __construct(string $errorType, array $errorData = [])
     {
         $this->errorType = $errorType;
+        $this->errorData = $errorData;
     }
 
     public function getErrorType(): string
@@ -22,4 +25,30 @@ class ValidationError
         return $this->errorType;
     }
 
+    public static function invalidType(array $expectedTypes, mixed $actualValue): ValidationError
+    {
+        $expectedTypesArr = [];
+        foreach ($expectedTypes as $type) {
+            $expectedTypesArr[] = self::getType($type);
+        }
+        return new ValidationError(self::INVALID_TYPE, [
+            'expectedType' => $expectedTypesArr,
+            'actualType' => self::getType($actualValue),
+        ]);
+    }
+
+    private static function getType(mixed $value): string
+    {
+        if (is_object($actualValue)) {
+            $value = get_class($value);
+        }
+
+        if (class_exists($value)) {
+            $actualType = 'instanceOf(' . get_class($value) . ')';
+        } else {
+            $actualType = gettype($value);
+        }
+
+        return $actualType;
+    }
 }

@@ -88,6 +88,7 @@ class TypefulPlugins
             'propertyNamePrefix' => Expect::string(),
             'properties' => Expect::arrayOf(Expect::structure([
                 'type' => Expect::string()->required(),
+                'default' => Expect::mixed(),
                 'options' => Expect::array(),
             ]))->min(1.0)
         ], $entityPlugins));

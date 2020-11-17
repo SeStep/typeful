@@ -2,17 +2,20 @@
 
 namespace SeStep\Typeful\Entity;
 
+use SeStep\Typeful\Types\CommitAwareType;
+use SeStep\Typeful\Types\PropertyType;
+
 class Property
 {
     /** @var string */
     private $type;
     /** @var array */
-    private $typeOptions;
+    private $options;
 
     public function __construct(string $type, array $options = [])
     {
         $this->type = $type;
-        $this->typeOptions = $options;
+        $this->options = $options;
     }
 
     public function getType(): string
@@ -20,13 +23,33 @@ class Property
         return $this->type;
     }
 
-    public function getTypeOptions(): array
+    public function getOptions(): array
     {
-        return $this->typeOptions;
+        return $this->options;
     }
 
     public function isRequired(): bool
     {
-        return $this->typeOptions['required'] ?? true;
+        return $this->options['required'] ?? true;
+    }
+
+    public function getDefaultValue($entityData)
+    {
+        $defaultValue = $this->options['default'] ?? null;
+
+        if (is_callable($defaultValue)) {
+            return call_user_func($defaultValue, $entityData);
+        }
+
+        return $defaultValue;
+    }
+
+    public function normalizeValue($value)
+    {
+        if (isset($this->options['normalize'])) {
+            return call_user_func($this->options['normalize'], $value);
+        }
+
+        return $value;
     }
 }

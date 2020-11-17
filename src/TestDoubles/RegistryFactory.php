@@ -35,11 +35,11 @@ class RegistryFactory
         ]);
     }
 
-    public static function createTypeRegistry(): TypeRegistry
+    public static function createTypeRegistry(array $additionalTypes = []): TypeRegistry
     {
-        return new TypeRegistry([
+        return new TypeRegistry(array_merge([
             self::TEST_TYPE_TEXT => new TextType(),
             self::TEST_TYPE_INT => new IntType(),
-        ]);
+        ], $additionalTypes));
     }
 }

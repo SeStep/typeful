@@ -2,15 +2,14 @@
 
 namespace SeStep\Typeful\DI;
 
+use Contributte\Console\DI\ConsoleExtension;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\Definitions\Reference;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\DI\Definitions\Statement;
 use Nette\DI\Helpers;
 use Nette\Schema\Processor;
 use Nette\Schema\Schema;
-use Nette\Utils\ObjectHelpers;
 use SeStep\Typeful\Console\ListEntitiesCommand;
 use SeStep\Typeful\Console\ListTypesCommand;
 use SeStep\Typeful\Entity\GenericDescriptor;
@@ -66,12 +65,14 @@ class TypefulExtension extends CompilerExtension
             'validator' => Validation\TypefulValidator::class,
         ]);
 
-        if (class_exists(\Symfony\Component\Console\Command\Command::class)) {
+        if (class_exists(ConsoleExtension::class)) {
             $builder->addDefinition($this->prefix('listTypesCommand'))
                 ->setType(ListTypesCommand::class)
+                ->addTag(ConsoleExtension::COMMAND_TAG, $this->name . ':types:list')
                 ->setArgument('name', $this->name . ':types:list');
             $builder->addDefinition($this->prefix('listDescriptorsCommand'))
                 ->setType(ListEntitiesCommand::class)
+                ->addTag(ConsoleExtension::COMMAND_TAG, $this->name . ':descriptors:list')
                 ->setArgument('name', $this->name . ':descriptors:list');
         }
     }

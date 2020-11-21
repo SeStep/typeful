@@ -40,7 +40,7 @@ class NumberType implements PropertyType, PreStoreNormalize
         return $value;
     }
 
-    protected function getPrecision(array $options): ?int
+    public function getPrecision(array $options): ?int
     {
         return $options['precision'] ?? null;
     }

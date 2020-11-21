@@ -2,6 +2,8 @@ typeful:
     types:
         int:
             class: SeStep\Typeful\Types\IntType
+        number:
+            class: SeStep\Typeful\Types\NumberType
         text:
             class: SeStep\Typeful\Types\TextType
         date:

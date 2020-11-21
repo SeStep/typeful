@@ -4,5 +4,14 @@ namespace SeStep\Typeful\Types;
 
 interface HasDefaultValue
 {
-    public function getDefaultValue(array $entityData, array $typeOptions);
+    /**
+     * Returns default value for property
+     *
+     * Can use type options or data of entity.
+     *
+     * @param array $typeOptions
+     * @param array $entityData
+     * @return mixed
+     */
+    public function getDefaultValue(array $typeOptions, array $entityData);
 }

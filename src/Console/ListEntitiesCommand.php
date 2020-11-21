@@ -16,7 +16,7 @@ class ListEntitiesCommand extends Command
     /** @var ITranslator */
     private $translator;
 
-    public function __construct(string $name, EntityDescriptorRegistry $descriptorRegistry, ITranslator $translator)
+    public function __construct(string $name, EntityDescriptorRegistry $descriptorRegistry, ITranslator $translator = null)
     {
         parent::__construct($name);
         $this->descriptorRegistry = $descriptorRegistry;
@@ -28,7 +28,7 @@ class ListEntitiesCommand extends Command
         $table = new Table($output);
         $table->setHeaders(['Code', 'Entity']);
         foreach ($this->descriptorRegistry->getDescriptors() as $name => $descriptor) {
-            $table->addRow([$name, $this->translator->translate($name)]);
+            $table->addRow([$name, $this->translator ? $this->translator->translate($name) : $name]);
         }
 
         $table->render();

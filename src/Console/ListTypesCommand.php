@@ -16,7 +16,7 @@ class ListTypesCommand extends Command
     /** @var ITranslator */
     private $translator;
 
-    public function __construct(string $name, TypeRegistry $descriptorRegistry, ITranslator $translator)
+    public function __construct(string $name, TypeRegistry $descriptorRegistry, ITranslator $translator = null)
     {
         parent::__construct($name);
         $this->typeRegistry = $descriptorRegistry;
@@ -28,7 +28,7 @@ class ListTypesCommand extends Command
         $table = new Table($output);
         $table->setHeaders(['Code', 'Type']);
         foreach ($this->typeRegistry->getTypesLocalized() as $type) {
-            $table->addRow([$type, $this->translator->translate($type)]);
+            $table->addRow([$type, $this->translator ? $this->translator->translate($type) : $type]);
         }
 
         $table->render();

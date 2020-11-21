@@ -18,7 +18,8 @@
   },
   "require-dev": {
     "contributte/console": "^0.8.0",
-    "phpunit/phpunit": "^9.0"
+    "phpunit/phpunit": "^9.0",
+    "tracy/tracy": "^2.7"
   },
   "suggest": {
     "contributte/console": "CLI commands for interaction with Typeful",

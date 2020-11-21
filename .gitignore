@@ -1,3 +1,6 @@
 /vendor/
+/test_output/*
 
 composer.lock
+
+!*/.gitkeep

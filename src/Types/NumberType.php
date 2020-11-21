@@ -2,9 +2,11 @@
 
 namespace SeStep\Typeful\Types;
 
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 use SeStep\Typeful\Validation\ValidationError;
 
-class NumberType implements PropertyType, PreStoreNormalize
+class NumberType implements PropertyType, PreStoreNormalize, TypeConfigValidation
 {
     const ERROR_LESS_THAN_MIN = 'typeful.error.lessThanMinimum';
     const ERROR_MORE_THAN_MAX = 'typeful.error.moreThanMaximum';
@@ -47,5 +49,14 @@ class NumberType implements PropertyType, PreStoreNormalize
     public function getPrecision(array $options): ?int
     {
         return $options['precision'] ?? null;
+    }
+
+    public static function getConfigSchema(): Schema
+    {
+        return Expect::structure([
+            'min' => Expect::float(),
+            'max' => Expect::float(),
+            'precision' => Expect::int(),
+        ])->castTo('array');
     }
 }

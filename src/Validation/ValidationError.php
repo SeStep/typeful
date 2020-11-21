@@ -25,6 +25,11 @@ class ValidationError
         return $this->errorType;
     }
 
+    public function getErrorData(): array
+    {
+        return $this->errorData;
+    }
+
     public static function invalidType(array $expectedTypes, $actualValue): ValidationError
     {
         $expectedTypesArr = [];
@@ -44,7 +49,7 @@ class ValidationError
         }
 
         if (class_exists($value)) {
-            $actualType = 'instanceOf(' . get_class($value) . ')';
+            $actualType = 'instanceOf(' . $value . ')';
         } else {
             $actualType = gettype($value);
         }

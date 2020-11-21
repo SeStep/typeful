@@ -58,7 +58,7 @@ class TypefulValidator
                 continue;
             }
 
-            if ($error = $this->validateValue($property->getType(), $property->getTypeOptions(), $value)) {
+            if ($error = $this->validateValue($property->getType(), $property->getOptions(), $value)) {
                 $errors[$name] = $error;
             }
         }

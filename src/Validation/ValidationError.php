@@ -25,7 +25,7 @@ class ValidationError
         return $this->errorType;
     }
 
-    public static function invalidType(array $expectedTypes, mixed $actualValue): ValidationError
+    public static function invalidType(array $expectedTypes, $actualValue): ValidationError
     {
         $expectedTypesArr = [];
         foreach ($expectedTypes as $type) {
@@ -37,9 +37,9 @@ class ValidationError
         ]);
     }
 
-    private static function getType(mixed $value): string
+    private static function getType($value): string
     {
-        if (is_object($actualValue)) {
+        if (is_object($value)) {
             $value = get_class($value);
         }
 

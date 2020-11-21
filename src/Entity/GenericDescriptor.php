@@ -6,7 +6,7 @@ namespace SeStep\Typeful\Entity;
 class GenericDescriptor implements EntityDescriptor
 {
     /** @var Property[] */
-    private $properties = [];
+    private $properties;
     /** @var string */
     private $propertyNamePrefix;
 

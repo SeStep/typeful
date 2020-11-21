@@ -2,9 +2,6 @@
 
 namespace SeStep\Typeful\Entity;
 
-use SeStep\Typeful\Types\CommitAwareType;
-use SeStep\Typeful\Types\PropertyType;
-
 class Property
 {
     /** @var string */

@@ -3,7 +3,6 @@
 namespace SeStep\Typeful\Service;
 
 use Nette\InvalidStateException;
-use Nette\SmartObject;
 use Nette\Utils\ObjectHelpers;
 use SeStep\Typeful\Entity;
 

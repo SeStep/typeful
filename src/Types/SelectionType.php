@@ -2,30 +2,34 @@
 
 namespace SeStep\Typeful\Types;
 
-
-use Nette\Caching\Cache;
-use Nette\Caching\Storages\MemoryStorage;
-use Nette\Utils\Arrays;
 use SeStep\Typeful\Validation\ValidationError;
 
 class SelectionType implements PropertyType
 {
     public function renderValue($value, array $options = [])
     {
-        return $value;
+        return $this->getItems($options)[$value];
     }
 
     public function validateValue($value, array $options = []): ?ValidationError
     {
-        if (!array_key_exists($value, $this->getValues())) {
+        if (!array_key_exists($value, $this->getItems($options))) {
             return new ValidationError(ValidationError::INVALID_VALUE);
         }
 
         return null;
     }
 
-    private function getValues(array $options)
+    public function getItems(array $options): array
     {
-        return $options['items'];
+        $items = $options['items'];
+        if (is_callable($items)) {
+            $items = call_user_func($items, $options);
+        }
+        if (is_iterable($items) && !is_array($items)) {
+            $items = iterator_to_array($items);
+        }
+
+        return $items;
     }
 }

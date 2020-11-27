@@ -16,13 +16,10 @@ abstract class TypefulRepository
     private $entityDescriptor;
     /** @var TypeRegistry */
     private $typeRegistry;
-    /** @var string */
-    private $entityName;
 
-    public function __construct(EntityDescriptor $entityDescriptor, TypeRegistry $typeRegistry, string $entityName) {
+    public function __construct(EntityDescriptor $entityDescriptor, TypeRegistry $typeRegistry) {
         $this->entityDescriptor = $entityDescriptor;
         $this->typeRegistry = $typeRegistry;
-        $this->entityName = $entityName;
     }
 
     public function createNewFromTypefulData(array $data)

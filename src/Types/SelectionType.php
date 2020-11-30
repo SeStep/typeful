@@ -4,7 +4,7 @@ namespace SeStep\Typeful\Types;
 
 use SeStep\Typeful\Validation\ValidationError;
 
-class SelectionType implements PropertyType
+class SelectionType implements PropertyType, RendersValue
 {
     public function renderValue($value, array $options = [])
     {

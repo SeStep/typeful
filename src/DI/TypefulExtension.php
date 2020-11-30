@@ -62,6 +62,7 @@ class TypefulExtension extends CompilerExtension
         $this->loadDefinitionsFromConfig([
             'typeRegister' => Service\TypeRegistry::class,
             'entityDescriptorRegister' => Service\EntityDescriptorRegistry::class,
+            'valueRenderer' => Service\ValueRenderer::class,
             'validator' => Validation\TypefulValidator::class,
         ]);
     }

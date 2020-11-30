@@ -6,7 +6,7 @@ use Latte\Runtime\Filters;
 use Nette\NotImplementedException;
 use SeStep\Typeful\Validation\ValidationError;
 
-class DateTimeType implements PropertyType
+class DateTimeType implements PropertyType, RendersValue
 {
     public function renderValue($value, array $options = [])
     {

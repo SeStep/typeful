@@ -6,7 +6,7 @@ use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 use SeStep\Typeful\Validation\ValidationError;
 
-class NumberType implements PropertyType, PreStoreNormalize, TypeConfigValidation
+class NumberType implements PropertyType, PreStoreNormalize, TypeConfigValidation, RendersValue
 {
     const ERROR_LESS_THAN_MIN = 'typeful.error.lessThanMinimum';
     const ERROR_MORE_THAN_MAX = 'typeful.error.moreThanMaximum';

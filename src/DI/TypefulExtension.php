@@ -2,7 +2,6 @@
 
 namespace SeStep\Typeful\DI;
 
-use Contributte\Console\DI\ConsoleExtension;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\Definitions\Definition;
@@ -13,8 +12,6 @@ use Nette\Schema\Processor;
 use Nette\Schema\Schema;
 use Nette\Schema\ValidationException as NetteValidationException;
 use Nette\Utils\ObjectHelpers;
-use SeStep\Typeful\Console\ListEntitiesCommand;
-use SeStep\Typeful\Console\ListTypesCommand;
 use SeStep\Typeful\Entity\GenericDescriptor;
 use SeStep\Typeful\Entity\Property;
 use SeStep\Typeful\Service;
@@ -59,8 +56,6 @@ class TypefulExtension extends CompilerExtension
 
     public function loadConfiguration()
     {
-        $builder = $this->getContainerBuilder();
-
         $configFile = $this->loadFromFile(__DIR__ . '/typefulExtension.neon');
         $this->registerTypeful($configFile['typeful']);
 
@@ -69,17 +64,6 @@ class TypefulExtension extends CompilerExtension
             'entityDescriptorRegister' => Service\EntityDescriptorRegistry::class,
             'validator' => Validation\TypefulValidator::class,
         ]);
-
-        if (class_exists(ConsoleExtension::class)) {
-            $builder->addDefinition($this->prefix('listTypesCommand'))
-                ->setType(ListTypesCommand::class)
-                ->addTag(ConsoleExtension::COMMAND_TAG, $this->name . ':types:list')
-                ->setArgument('name', $this->name . ':types:list');
-            $builder->addDefinition($this->prefix('listDescriptorsCommand'))
-                ->setType(ListEntitiesCommand::class)
-                ->addTag(ConsoleExtension::COMMAND_TAG, $this->name . ':descriptors:list')
-                ->setArgument('name', $this->name . ':descriptors:list');
-        }
     }
 
     public function beforeCompile()

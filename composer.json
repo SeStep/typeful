@@ -13,11 +13,12 @@
     "test": "phpunit ./test"
   },
   "require": {
-    "php": "^7.3",
+    "php": ">=7.3",
     "nette/schema": "^1.0"
   },
   "require-dev": {
-    "contributte/console": "^0.8.0",
+    "nette/di": "^3.0",
+    "symfony/console": "^5.2",
     "phpunit/phpunit": "^9.0",
     "tracy/tracy": "^2.7"
   },

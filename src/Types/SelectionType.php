@@ -32,4 +32,17 @@ class SelectionType implements PropertyType
 
         return $items;
     }
+
+    public static function enumerateConstants(string $class, string $prefixValues = ''): array
+    {
+        $classReflection = new \ReflectionClass($class);
+        $items = $classReflection->getConstants();
+        if ($prefixValues) {
+            foreach ($items as $key => $value) {
+                $items[$key] = "$prefixValues$value";
+            }
+        }
+
+        return $items;
+    }
 }

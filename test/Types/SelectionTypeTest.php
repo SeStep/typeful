@@ -61,6 +61,24 @@ class SelectionTypeTest extends TestCase
         self::assertEquals('Video Games', $value);
     }
 
+    public function testEnumerateConstants()
+    {
+        $items = SelectionType::enumerateConstants(DummyEnumType::class);
+        self::assertEquals([
+            'AC' => 'ALTERNATING',
+            'DC' => 'DIRECT',
+        ], $items);
+    }
+
+    public function testEnumerateConstantsWithPrefix()
+    {
+        $items = SelectionType::enumerateConstants(DummyEnumType::class, 'CURRENT_');
+        self::assertEquals([
+            'AC' => 'CURRENT_ALTERNATING',
+            'DC' => 'CURRENT_DIRECT',
+        ], $items);
+    }
+
     private function getTestOptions()
     {
         return [

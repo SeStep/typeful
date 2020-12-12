@@ -13,8 +13,7 @@ class NumberType implements PropertyType, PreStoreNormalize, TypeConfigValidatio
 
     public function renderValue($value, array $options = [])
     {
-        $round = round($value, $this->getPrecision($options));
-        return $round;
+        return $this->roundValue($value, $options);
     }
 
     public function validateValue($value, array $options = []): ?ValidationError
@@ -34,6 +33,11 @@ class NumberType implements PropertyType, PreStoreNormalize, TypeConfigValidatio
     }
 
     public function normalizePreStore($value, array $options, array $entityData = [])
+    {
+        return $this->roundValue($value, $options);
+    }
+
+    private function roundValue($value, array $options)
     {
         $precision = $this->getPrecision($options);
         if (is_int($precision)) {
